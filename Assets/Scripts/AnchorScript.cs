@@ -8,9 +8,12 @@ public class AnchorScript : MonoBehaviour {
 
     GameObject Chain;
     GameObject HookedObject;
+    //GameObject HookedObjectOriginalParent;
 
     public bool comeBack = false;
     bool hasHookedObject = false;
+
+    float hookedTimer = 2f;
 
     // Use this for initialization
     void Start () {
@@ -25,15 +28,31 @@ public class AnchorScript : MonoBehaviour {
 
         line.SetPosition(1, transform.localPosition);
 
-        if (hasHookedObject == true && (Vector3.Distance(Chain.transform.localPosition, transform.localPosition) < 0.7f))
+        if (hasHookedObject == true && (Vector3.Distance(Chain.transform.localPosition, transform.localPosition) < 0.6f) 
+            && HookedObject.tag == "Enemy")
         {
             transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0,0,0);        
 
             Chain.transform.Rotate(new Vector3(0, 0, 400) * Time.deltaTime);
 
-                
-        }
-       
+            hookedTimer -= Time.deltaTime;
+            if (hookedTimer < 0)
+            {
+                hasHookedObject = false;
+                comeBack = true;
+
+                HookedObject.GetComponent<FishManScript>().isHooked = false;
+                HookedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+                HookedObject.transform.parent = HookedObject.GetComponent<FishManScript>().fishMen.transform;
+                HookedObject.transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 4, 0);
+                HookedObject.transform.rotation = Quaternion.identity;
+
+                transform.GetComponent<CircleCollider2D>().radius = 0.14f;
+                hookedTimer = 2f;
+            }
+        }  
+            
+        
     }
 
     private void FixedUpdate()
@@ -60,7 +79,8 @@ public class AnchorScript : MonoBehaviour {
         {
 
             HookedObject = collision.gameObject;
-           
+            //HookedObjectOriginalParent = collision.gameObject.transform.parent.gameObject;
+
             transform.position = HookedObject.transform.position;
             transform.GetComponent<CircleCollider2D>().radius = 0.03f;
 
@@ -73,7 +93,7 @@ public class AnchorScript : MonoBehaviour {
         }
 
         if ((collision.gameObject.tag == "Ground" || (collision.gameObject.tag == "Platform" && (collision.gameObject.transform.position.y + collision.offset.y) < Chain.transform.position.y)) 
-            && hasHookedObject)
+            && hasHookedObject && HookedObject.tag == "Enemy")
         {
             hasHookedObject = false;
             comeBack = true;

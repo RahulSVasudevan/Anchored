@@ -12,11 +12,11 @@ public class PlayerScript : MonoBehaviour {
     public float maxSpeed = 2f;
     float JumpTimer = 1f;
     float BubbleTimer = 4f;
-    //float rotZ = 0;
 
     bool releaseAnchor = false;
     public bool anchorReleased = false;
     public bool facingRight = true;
+    //bool isGrounded = false;
 
     GameObject AnchorChain;
     GameObject Anchor;
@@ -63,24 +63,26 @@ public class PlayerScript : MonoBehaviour {
         anim.SetFloat("Speed", Mathf.Abs(h));
 
         JumpTimer -= Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Space) && JumpTimer < 0f)
+        if (Input.GetKeyDown(KeyCode.Space) && JumpTimer < 0f )
         {
             rb2d.AddForce(Vector2.up * 3, ForceMode2D.Impulse);
             JumpTimer = 1f;
+            anim.SetBool("IsGrounded", false);
         }
+
+
+
 
 
 
 // Swinging Anchor
 
-        //AnchorChain.SetActive(false);
 
         if (Input.GetKey("x") && anchorReleased == false && Anchor.GetComponent<AnchorScript>().comeBack == false)
         {
             AnchorChain.SetActive(true);
             Anchor.GetComponent<Rigidbody2D>().isKinematic = true;
 
-            //rotZ += Time.deltaTime;
             AnchorChain.transform.Rotate(new Vector3(0, 0, 200) * Time.deltaTime);
 
             releaseAnchor = true;
@@ -96,6 +98,11 @@ public class PlayerScript : MonoBehaviour {
 
             releaseAnchor = false;
         }
+
+        if(anchorReleased)
+            anim.SetBool("SwingingAnchor", true);   
+        else
+            anim.SetBool("SwingingAnchor", false);
 
         // Bubbles
 
@@ -136,4 +143,32 @@ public class PlayerScript : MonoBehaviour {
         //transform.localScale = theScale;
         transform.GetComponent<SpriteRenderer>().flipX = !transform.GetComponent<SpriteRenderer>().flipX;
     }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Platform")
+        {
+            //isGrounded = true;
+            anim.SetBool("IsGrounded", true);
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Platform")
+        {
+            //isGrounded = false;
+            anim.SetBool("IsGrounded", false);
+        }
+    }
+
+    /*
+    IEnumerator JumpAnimationDelay()
+    {
+        yield return new WaitForSeconds(0.3f);
+        if(!isGrounded)
+            anim.SetBool("IsGrounded", false);
+    }
+    */
 }
