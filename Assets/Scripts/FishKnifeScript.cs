@@ -8,6 +8,8 @@ public class FishKnifeScript : MonoBehaviour {
 
     //Vector3 direction;
 
+    public bool isReflected = false;
+
 	void Start () {
 
         //destination = new Vector3(0,0,0);
@@ -29,11 +31,17 @@ public class FishKnifeScript : MonoBehaviour {
         {
             Destroy(gameObject);
         }
+
+        if (collision.gameObject.tag == "Enemy" && isReflected)
+        {
+            collision.gameObject.GetComponent<FishManScript>().isDown = true;
+            Destroy(gameObject);
+        }
     }
 
     IEnumerator DestroyKnife()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
         Destroy(gameObject);
     }
 }

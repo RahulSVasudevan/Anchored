@@ -6,7 +6,7 @@ public class BackGroundScript : MonoBehaviour {
 
     public GameObject player;
     public GameObject bg1;
-    public GameObject bg2;
+    //public GameObject bg2;
 
     float offsetX,offsetY;
 
@@ -21,6 +21,6 @@ public class BackGroundScript : MonoBehaviour {
 	void Update () {
 
         bg1.transform.position = new Vector3((0.5f*(player.transform.position.x-offsetX))+offsetX, (0.5f * (player.transform.position.y - offsetY)) + offsetY);
-        bg2.transform.position = player.transform.position + new Vector3(0.8f, 0.67f, 1);
+        //bg2.transform.position = player.transform.position + new Vector3(0.8f, 0.67f, 1);
     }
 }

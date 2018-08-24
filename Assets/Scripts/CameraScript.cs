@@ -24,6 +24,8 @@ public class CameraScript : MonoBehaviour {
 
         transform.position = Player.transform.position + new Vector3(0.8f, 0.67f, -1);
 
+        transform.position = new Vector3(transform.position.x, (transform.position.y + 2.5f)/2, transform.position.z);
+
         //ShakeTimer += Time.deltaTime * 50;
 
 // Bubbles

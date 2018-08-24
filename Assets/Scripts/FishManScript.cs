@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FishManScript : MonoBehaviour {
 
+    Animator anim;
+
     float attackTimer = 0;
     float jumpTimer = 0;
     float direction = 0;
@@ -13,11 +15,14 @@ public class FishManScript : MonoBehaviour {
     public GameObject fishMen;
 
     public bool isHooked = false;
+    public bool isDown = false;
    
 
     // Use this for initialization
     void Start () {
-		
+
+        anim = GetComponent<Animator>();
+
 	}
 	
 	// Update is called once per frame
@@ -25,45 +30,65 @@ public class FishManScript : MonoBehaviour {
 
         attackTimer -= Time.deltaTime;
         jumpTimer -= Time.deltaTime;
+
+
+
+        if (isDown)
+        {
+            anim.SetBool("IsDown", true);
+            if(GameObject.Find("Anchor"))
+                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), GameObject.Find("Anchor").GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), player.transform.GetComponent<Collider2D>());
+        }
+        else
+            anim.SetBool("IsDown", false);
     }
 
     private void FixedUpdate()
     {
         float DistanceFromPlayer = Vector3.Distance(player.transform.position, transform.position);
 
-        if (transform.position.x - player.transform.position.x > 0)
+        
+        if(!isHooked && !isDown)
         {
-            direction = -1;
-            Flip();
-        }
-        else           
-        {
-            direction = 1;
-            Flip();
-        }
+            if (transform.position.x - player.transform.position.x > 0)
+            {
+                direction = -1;
+                Flip();
+            }
+            else
+            {
+                direction = 1;
+                Flip();
+            }
 
-        if(!isHooked)
-        { 
+            anim.SetBool("IsAttacking", false);
             if ((attackTimer < 0) && (DistanceFromPlayer < 2f))
             {
-                var projectile = Instantiate(knife, transform.position, Quaternion.identity);
+                anim.SetBool("IsAttacking",true);
 
-                Vector3 throwDirection = Vector3.Normalize(player.transform.position - transform.position);
-                projectile.GetComponent<Rigidbody2D>().velocity = throwDirection;
+                if (attackTimer < -0.5f)
+                { 
+                    var projectile = Instantiate(knife, transform.position + new Vector3(direction *0.2f,0,0), Quaternion.identity);
 
-                attackTimer = 2f;
+                    Vector3 throwDirection = Vector3.Normalize(player.transform.position - transform.position);
+                    projectile.GetComponent<Rigidbody2D>().velocity = throwDirection;
+
+                    attackTimer = 2f;
+                    anim.SetBool("IsAttacking", false);
+                }
             }
 
             if (jumpTimer < 0)
             {
-                if (DistanceFromPlayer > 2f && DistanceFromPlayer < 5f)
+                if (DistanceFromPlayer > 2f && DistanceFromPlayer < 3f)
                 {
-                    transform.GetComponent<Rigidbody2D>().velocity = new Vector3(direction, 3, 0);
+                    transform.GetComponent<Rigidbody2D>().velocity = new Vector3(direction, Random.Range(2,4), 0);
                 }
 
                 if (DistanceFromPlayer < 1f)
                 {
-                    transform.GetComponent<Rigidbody2D>().velocity = new Vector3(-direction,3,0);
+                    transform.GetComponent<Rigidbody2D>().velocity = new Vector3(-direction, Random.Range(2, 4), 0);
                 }
                 jumpTimer = 2f;
             }
@@ -83,6 +108,5 @@ public class FishManScript : MonoBehaviour {
             transform.GetComponent<SpriteRenderer>().flipX = true;
 
     }
-
 
 }

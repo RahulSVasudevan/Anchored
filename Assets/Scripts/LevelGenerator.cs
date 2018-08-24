@@ -15,11 +15,18 @@ public class LevelGenerator : MonoBehaviour {
     public GameObject RockFormtion1;
     public GameObject RockFormtion2;
     public GameObject RockFormtion3;
+    public GameObject FishMan;
+    public GameObject FishMen;
+    GameObject FinishPoint;
+
+    public int EnemyGroupSize = 2;
 
     // Use this for initialization
     void Start () {
-        TerrainGenerator();
 
+        FinishPoint = GameObject.Find("RightWall");
+
+        TerrainGenerator();        
     }
 
     double PRNG()                                 //Pseudo Random Number Generator (Linear Congruential Generator)
@@ -106,6 +113,19 @@ public class LevelGenerator : MonoBehaviour {
 
                 }
 
+
+                // Enemy Spawning
+
+                EnemyGroupSize  = FinishPoint.GetComponent<ReloadLevelScript>().EnemyGroupSize;
+                if (X % (wl * 250) == 0)
+                {
+                    for(int i = 0; i< EnemyGroupSize; i++)
+                    {
+                        var enemy = Instantiate(FishMan, new Vector3((float)x + Random.Range(-4,0), 4, 0), Quaternion.identity);
+                        enemy.transform.parent = FishMen.transform;
+                    }
+                }
+
                 X -= 35;
             
             
@@ -115,7 +135,7 @@ public class LevelGenerator : MonoBehaviour {
 
         // Background terrain
         {
-            double x = 30, y = 0, a = 0, b = 0, h = 2.5;
+            double x = 30, y = 0, a = 0, b = 0, h = 6f;
             double amp = 2, wl = 4;
             int X = (int)x * 100;
 

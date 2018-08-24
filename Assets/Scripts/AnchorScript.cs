@@ -33,7 +33,7 @@ public class AnchorScript : MonoBehaviour {
         {
             transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0,0,0);        
 
-            Chain.transform.Rotate(new Vector3(0, 0, 400) * Time.deltaTime);
+            Chain.transform.Rotate(new Vector3(0, 0, 600) * Time.deltaTime);
 
             hookedTimer -= Time.deltaTime;
             if (hookedTimer < 0)
@@ -42,6 +42,7 @@ public class AnchorScript : MonoBehaviour {
                 comeBack = true;
 
                 HookedObject.GetComponent<FishManScript>().isHooked = false;
+                HookedObject.GetComponent<FishManScript>().isDown = true;
                 HookedObject.GetComponent<Rigidbody2D>().isKinematic = false;
                 HookedObject.transform.parent = HookedObject.GetComponent<FishManScript>().fishMen.transform;
                 HookedObject.transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 4, 0);
@@ -60,7 +61,7 @@ public class AnchorScript : MonoBehaviour {
         if ((Vector3.Distance(Chain.transform.localPosition, transform.localPosition) > 3f) || comeBack == true)
         {
             Vector3 throwVector = Vector3.Normalize(Chain.transform.position - transform.position);
-            transform.GetComponent<Rigidbody2D>().velocity = throwVector * 2;
+            transform.GetComponent<Rigidbody2D>().velocity = throwVector * 3;
 
             comeBack = false;
         }
@@ -99,12 +100,19 @@ public class AnchorScript : MonoBehaviour {
             comeBack = true;
 
             HookedObject.GetComponent<FishManScript>().isHooked = false;
+            HookedObject.GetComponent<FishManScript>().isDown = true;
             HookedObject.GetComponent<Rigidbody2D>().isKinematic = false;
             HookedObject.transform.parent = HookedObject.GetComponent<FishManScript>().fishMen.transform;
             HookedObject.transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 4, 0);
             HookedObject.transform.rotation = Quaternion.identity;
 
             transform.GetComponent<CircleCollider2D>().radius = 0.14f;
+        }
+
+        if (collision.gameObject.tag == "EnemyProjectile")
+        {
+            collision.gameObject.GetComponent<Rigidbody2D>().velocity = -collision.gameObject.GetComponent<Rigidbody2D>().velocity;
+            collision.gameObject.GetComponent<FishKnifeScript>().isReflected = true;
         }
     }
 }

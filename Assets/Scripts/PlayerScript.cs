@@ -13,7 +13,7 @@ public class PlayerScript : MonoBehaviour {
     float JumpTimer = 1f;
     float BubbleTimer = 4f;
 
-    bool releaseAnchor = false;
+    bool swingAnchor = false;
     public bool anchorReleased = false;
     public bool facingRight = true;
     //bool isGrounded = false;
@@ -50,32 +50,36 @@ public class PlayerScript : MonoBehaviour {
 
 // Navigation
 
-        h = Input.GetAxis("Horizontal");
+        if(!anchorReleased)
+        { 
+            h = Input.GetAxis("Horizontal");
 
-        //rb2d.AddForce(Vector2.right * h *5);
-        rb2d.velocity = new Vector2(h * maxSpeed, rb2d.velocity.y);
+            rb2d.velocity = new Vector2(h * maxSpeed, rb2d.velocity.y);
 
-        if (h > 0 && !facingRight)
-            Flip();
-        else if (h < 0 && facingRight)
-            Flip();
+            if (h > 0 && !facingRight)
+                Flip();
+            else if (h < 0 && facingRight)
+                Flip();
 
-        anim.SetFloat("Speed", Mathf.Abs(h));
+            anim.SetFloat("Speed", Mathf.Abs(h));
 
-        JumpTimer -= Time.deltaTime;
-        if (Input.GetKeyDown(KeyCode.Space) && JumpTimer < 0f )
-        {
-            rb2d.AddForce(Vector2.up * 3, ForceMode2D.Impulse);
-            JumpTimer = 1f;
-            anim.SetBool("IsGrounded", false);
+            JumpTimer -= Time.deltaTime;
+            if (Input.GetKeyDown(KeyCode.Space) && JumpTimer < 0f )
+            {
+                rb2d.AddForce(Vector2.up * 3, ForceMode2D.Impulse);
+                JumpTimer = 1f;
+                anim.SetBool("IsGrounded", false);
+            }
+
         }
 
+        if (anchorReleased || swingAnchor)
+            anim.SetBool("SwingingAnchor", true);
+        else
+            anim.SetBool("SwingingAnchor", false);
 
 
-
-
-
-// Swinging Anchor
+        // Swinging Anchor
 
 
         if (Input.GetKey("x") && anchorReleased == false && Anchor.GetComponent<AnchorScript>().comeBack == false)
@@ -85,24 +89,21 @@ public class PlayerScript : MonoBehaviour {
 
             AnchorChain.transform.Rotate(new Vector3(0, 0, 200) * Time.deltaTime);
 
-            releaseAnchor = true;
+            swingAnchor = true;
         }
-        else if (releaseAnchor)
+        else if (swingAnchor)
         {
             anchorReleased = true;
 
             Anchor.GetComponent<Rigidbody2D>().isKinematic = false;
 
             Vector3 throwVector = Vector3.Normalize(Anchor.transform.position - transform.position);
-            Anchor.transform.GetComponent<Rigidbody2D>().velocity = throwVector * 2; 
+            Anchor.transform.GetComponent<Rigidbody2D>().velocity = throwVector * 3;
 
-            releaseAnchor = false;
+            swingAnchor = false;
         }
 
-        if(anchorReleased)
-            anim.SetBool("SwingingAnchor", true);   
-        else
-            anim.SetBool("SwingingAnchor", false);
+      
 
         // Bubbles
 
@@ -135,7 +136,7 @@ public class PlayerScript : MonoBehaviour {
         Instantiate(Bubble, transform.position + new Vector3(Random.Range(-0.15f, 0.1f), 0,0), Quaternion.identity);
     }
 
-    void Flip()
+    public void Flip()
     {
         facingRight = !facingRight;
         //Vector3 theScale = transform.localScale;
