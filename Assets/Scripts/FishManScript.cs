@@ -34,9 +34,10 @@ public class FishManScript : MonoBehaviour {
 
 
         if (isDown)
-        {
+        {          
             anim.SetBool("IsDown", true);
-            if(GameObject.Find("Anchor"))
+
+            if (GameObject.Find("Anchor"))
                 Physics2D.IgnoreCollision(GetComponent<Collider2D>(), GameObject.Find("Anchor").GetComponent<Collider2D>());
             Physics2D.IgnoreCollision(GetComponent<Collider2D>(), player.transform.GetComponent<Collider2D>());
         }
@@ -65,9 +66,10 @@ public class FishManScript : MonoBehaviour {
             anim.SetBool("IsAttacking", false);
             if ((attackTimer < 0) && (DistanceFromPlayer < 2f))
             {
+                
                 anim.SetBool("IsAttacking",true);
 
-                if (attackTimer < -0.5f)
+                if (attackTimer < -0.3f)
                 { 
                     var projectile = Instantiate(knife, transform.position + new Vector3(direction *0.2f,0,0), Quaternion.identity);
 

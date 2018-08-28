@@ -20,7 +20,11 @@ public class BackGroundScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        bg1.transform.position = new Vector3((0.5f*(player.transform.position.x-offsetX))+offsetX, (0.5f * (player.transform.position.y - offsetY)) + offsetY);
+        if(player.transform.position.x > 2 && player.transform.position.x < 30)
+            bg1.transform.position = new Vector3((0.5f*(player.transform.position.x-offsetX))+offsetX, (0.5f * (player.transform.position.y - offsetY)) + offsetY);
+        else
+            bg1.transform.position = new Vector3(bg1.transform.position.x, (0.5f * (player.transform.position.y - offsetY)) + offsetY);
+
         //bg2.transform.position = player.transform.position + new Vector3(0.8f, 0.67f, 1);
     }
 }

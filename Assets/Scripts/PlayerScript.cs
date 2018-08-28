@@ -48,10 +48,10 @@ public class PlayerScript : MonoBehaviour {
 
     void Update () {
 
-// Navigation
+        // Navigation
 
-        if(!anchorReleased)
-        { 
+        if (!anchorReleased)
+        {
             h = Input.GetAxis("Horizontal");
 
             rb2d.velocity = new Vector2(h * maxSpeed, rb2d.velocity.y);
@@ -64,13 +64,17 @@ public class PlayerScript : MonoBehaviour {
             anim.SetFloat("Speed", Mathf.Abs(h));
 
             JumpTimer -= Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.Space) && JumpTimer < 0f )
+            if (Input.GetKeyDown(KeyCode.Space) && JumpTimer < 0f)
             {
                 rb2d.AddForce(Vector2.up * 3, ForceMode2D.Impulse);
                 JumpTimer = 1f;
                 anim.SetBool("IsGrounded", false);
             }
 
+        }
+        else
+        {
+            anim.SetFloat("Speed", 0);
         }
 
         if (anchorReleased || swingAnchor)
@@ -97,7 +101,7 @@ public class PlayerScript : MonoBehaviour {
 
             Anchor.GetComponent<Rigidbody2D>().isKinematic = false;
 
-            Vector3 throwVector = Vector3.Normalize(Anchor.transform.position - transform.position);
+            Vector3 throwVector = Vector3.Normalize(Anchor.transform.position - AnchorChain.transform.position);
             Anchor.transform.GetComponent<Rigidbody2D>().velocity = throwVector * 3;
 
             swingAnchor = false;

@@ -7,6 +7,9 @@ public class LevelGenerator : MonoBehaviour {
     public GameObject SandTile1;
     public GameObject SandTile2;
     public GameObject SandTile3;
+    public GameObject SandTile4;
+    public GameObject SandTile5;
+    public GameObject SandTile6;
     public GameObject MiniSandTile;
     public GameObject Background1;
     public GameObject BGFish1;
@@ -79,14 +82,19 @@ public class LevelGenerator : MonoBehaviour {
                 }
 
                 // Randomising tiles
-                int randomInt = (int)(Random.value * 4);
-                if(randomInt <= 1)
+                int randomInt = (int)(Random.value * 10);
+                if(randomInt <= 3)
                     Instantiate(SandTile1, new Vector3((float)x, (float)y, 0), Quaternion.identity);
-                else if (randomInt == 2)
+                else if (randomInt == 4 || randomInt == 5)
                     Instantiate(SandTile2, new Vector3((float)x, (float)y, 0), Quaternion.identity);
-                else if (randomInt == 3)
+                else if (randomInt == 6)
                     Instantiate(SandTile3, new Vector3((float)x, (float)y, 0), Quaternion.identity);
-
+                else if (randomInt == 7)
+                    Instantiate(SandTile4, new Vector3((float)x, (float)y, 0), Quaternion.identity);
+                else if (randomInt == 8)
+                    Instantiate(SandTile5, new Vector3((float)x, (float)y, 0), Quaternion.identity);
+                else if (randomInt == 9)
+                    Instantiate(SandTile6, new Vector3((float)x, (float)y, 0), Quaternion.identity);
 
                 // Background fish
                 if (X % (wl * 50) == 0)
@@ -121,7 +129,7 @@ public class LevelGenerator : MonoBehaviour {
                 {
                     for(int i = 0; i< EnemyGroupSize; i++)
                     {
-                        var enemy = Instantiate(FishMan, new Vector3((float)x + Random.Range(-4,0), 4, 0), Quaternion.identity);
+                        var enemy = Instantiate(FishMan, new Vector3((float)x + Random.Range(-4,-1), 4, 0), Quaternion.identity);
                         enemy.transform.parent = FishMen.transform;
                     }
                 }

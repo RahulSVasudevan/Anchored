@@ -8,10 +8,12 @@ public class AnchorScript : MonoBehaviour {
 
     GameObject Chain;
     GameObject HookedObject;
+    AudioSource ChainSound;
     //GameObject HookedObjectOriginalParent;
 
     public bool comeBack = false;
     bool hasHookedObject = false;
+    bool releaseEnemy = false;
 
     float hookedTimer = 2f;
 
@@ -19,6 +21,8 @@ public class AnchorScript : MonoBehaviour {
     void Start () {
 
         Chain = transform.parent.gameObject;
+        //ChainSound = GameObject.Find("ChainSound").GetComponent<AudioSource>();
+
         line = Chain.GetComponent<LineRenderer>();
         line.SetPosition(0, Chain.transform.localPosition);
     }
@@ -47,6 +51,9 @@ public class AnchorScript : MonoBehaviour {
                 HookedObject.transform.parent = HookedObject.GetComponent<FishManScript>().fishMen.transform;
                 HookedObject.transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 4, 0);
                 HookedObject.transform.rotation = Quaternion.identity;
+
+                HookedObject.GetComponent<AudioSource>().pitch = Random.Range(0.6f, 1);
+                HookedObject.GetComponent<AudioSource>().Play();
 
                 transform.GetComponent<CircleCollider2D>().radius = 0.14f;
                 hookedTimer = 2f;
@@ -78,6 +85,7 @@ public class AnchorScript : MonoBehaviour {
 
         if (collision.gameObject.tag == "Enemy" &&  (Vector3.Distance(collision.gameObject.transform.position, Chain.transform.position) > 0.3f))
         {
+            //ChainSound.Play();
 
             HookedObject = collision.gameObject;
             //HookedObjectOriginalParent = collision.gameObject.transform.parent.gameObject;
@@ -101,10 +109,13 @@ public class AnchorScript : MonoBehaviour {
 
             HookedObject.GetComponent<FishManScript>().isHooked = false;
             HookedObject.GetComponent<FishManScript>().isDown = true;
-            HookedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+            HookedObject.GetComponent<Rigidbody2D>().isKinematic = false;           
             HookedObject.transform.parent = HookedObject.GetComponent<FishManScript>().fishMen.transform;
             HookedObject.transform.GetComponent<Rigidbody2D>().velocity = new Vector3(0, 4, 0);
             HookedObject.transform.rotation = Quaternion.identity;
+
+            HookedObject.GetComponent<AudioSource>().pitch = Random.Range(0.6f, 1);
+            HookedObject.GetComponent<AudioSource>().Play();
 
             transform.GetComponent<CircleCollider2D>().radius = 0.14f;
         }

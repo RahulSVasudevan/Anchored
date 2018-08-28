@@ -21,7 +21,10 @@ public class FishKnifeScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        transform.Rotate(new Vector3(0, 0, 200) * Time.deltaTime);
+        if(!isReflected)
+            transform.Rotate(new Vector3(0, 0, 200) * Time.deltaTime);
+        else
+            transform.Rotate(new Vector3(0, 0, 600) * Time.deltaTime);
     }
 
 
@@ -35,6 +38,7 @@ public class FishKnifeScript : MonoBehaviour {
         if (collision.gameObject.tag == "Enemy" && isReflected)
         {
             collision.gameObject.GetComponent<FishManScript>().isDown = true;
+            //collision.gameObject.GetComponent<AudioSource>().Play();
             Destroy(gameObject);
         }
     }
